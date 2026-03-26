@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Royal Amethyst | رويل أميثيست لتنظيم المناسبات</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&amp;family=Cairo:wght@300;400;600;700&amp;family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-primary": "#eeb1ff",
+                        "on-primary-container": "#e6a1fb",
+                        "primary-fixed": "#f9d8ff",
+                        "surface": "#fbf9f4",
+                        "on-secondary-container": "#71577c",
+                        "on-tertiary-fixed": "#261900",
+                        "secondary-fixed": "#f6d9ff",
+                        "on-tertiary-container": "#dcb56c",
+                        "secondary": "#6f557a",
+                        "surface-dim": "#dbdad5",
+                        "tertiary-container": "#614604",
+                        "background": "#fbf9f4",
+                        "on-primary-fixed": "#330045",
+                        "inverse-on-surface": "#f2f1ec",
+                        "primary-container": "#6c3082",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#563e61",
+                        "surface-container-highest": "#e4e2dd",
+                        "secondary-fixed-dim": "#dbbce6",
+                        "tertiary-fixed-dim": "#e9c176",
+                        "on-background": "#1b1c19",
+                        "primary-fixed-dim": "#eeb1ff",
+                        "surface-container": "#f0eee9",
+                        "surface-container-low": "#f5f3ee",
+                        "outline-variant": "#d0c2d0",
+                        "outline": "#7f7380",
+                        "on-primary-fixed-variant": "#682c7e",
+                        "secondary-container": "#f3d2fd",
+                        "tertiary-fixed": "#ffdea5",
+                        "inverse-surface": "#30312e",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1b1c19",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#281233",
+                        "on-tertiary-fixed-variant": "#5d4201",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#4d444f",
+                        "tertiary": "#453000",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#fbf9f4",
+                        "surface-tint": "#824598",
+                        "surface-container-high": "#eae8e3",
+                        "primary": "#531669",
+                        "surface-variant": "#e4e2dd"
+                    },
+                    fontFamily: {
+                        "headline": ["Tajawal", "Noto Serif"],
+                        "body": ["Cairo", "Inter"],
+                        "label": ["Cairo", "Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <!-- TopNavBar -->
+    <header
+        class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 backdrop-blur-xl shadow-[0_10px_40px_0px_rgba(27,28,25,0.05)]">
+        <nav class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+            <!-- Brand Logo (Right side in RTL) -->
+            <div class="flex items-center gap-4">
+                <span class="font-serif text-2xl italic text-[#531669] dark:text-[#f9d8ff] font-bold">
+                    <img src="logo.png" height="50px" />
+                </span>
+            </div>
+            <!-- Navigation Links (Center) -->
+            <div class="hidden md:flex gap-8 items-center">
+                <a class="text-[#6C3082] border-b-2 border-[#ffdea5] pb-1 font-bold font-serif text-sm tracking-wide"
+                    href="#">الرئيسية</a>
+                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
+                    href="#">القاعات</a>
+                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
+                    href="#">الخدمات</a>
+                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
+                    href="#">آراء العملاء</a>
+                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
+                    href="#">اتصل بنا</a>
+            </div>
+            <!-- Actions (Left side in RTL) -->
+            <div class="flex items-center gap-6">
+                <div
+                    class="flex items-center gap-2 text-[#6C3082] cursor-pointer hover:bg-[#f5f3ee] p-2 rounded-full transition-all">
+                    <span class="material-symbols-outlined">language</span>
+                    <span class="text-xs font-bold">EN</span>
+                </div>
+                <button
+                    class="bg-primary text-on-primary px-8 py-3 rounded-xl font-bold hover:bg-primary-container transition-all scale-95 active:scale-90 duration-300">
+                    احجز الآن
+                </button>
+            </div>
+        </nav>
+    </header>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="relative h-[972px] flex items-center overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img alt="Grand wedding ballroom" class="w-full h-full object-cover"
+                    data-alt="luxurious grand wedding ballroom with violet lighting, crystal chandeliers, and opulent floral arrangements at night"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW9AviSONQKTZYGnGuzaXshLNOvyPbV_5AAUHKeS5gvmIyrkxV53fiONWHZf49fj0N3c7azDEGeWrKFOr5GmqAkNY_eQiGUUP9WDX8uBNoBuMTkiG6zJdeEyW68xL7xvcRh7wTjpcFEZpIreipsZPK1jqLk8LtBItiGshgKVQllBI3m7Fl5Jo-pEvjsdqwxteJbGpeuFhhIFaxyzl0n4H3cH5f52EfT68JJ_TNNNIz3CjTQ2ltwBU6_i2tTtTgS-4Lqwx98aPJfBNH" />
+                <div class="absolute inset-0 bg-gradient-to-l from-primary/60 to-transparent"></div>
+            </div>
+            <div class="relative z-10 container mx-auto px-8 lg:px-20 text-white">
+                <div class="max-w-3xl">
+                    <h1 class="text-6xl md:text-8xl font-extrabold mb-8 leading-tight drop-shadow-xl">اعثر على قاعة
+                        زفافك المثالية</h1>
+                    <p class="text-xl md:text-2xl mb-12 font-light opacity-90 leading-relaxed max-w-2xl">نحن نحول أحلامك
+                        إلى حقيقة في أجواء من الفخامة الملكية والجمال الخالد.</p>
+                </div>
+                <!-- Search Form -->
+                <div
+                    class="bg-surface/95 backdrop-blur-md p-8 rounded-lg shadow-2xl max-w-5xl mt-12 grid grid-cols-1 md:grid-cols-4 gap-8 border-t-2 border-tertiary-fixed">
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">location_on</span>
+                            الموقع
+                        </label>
+                        <input
+                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface"
+                            placeholder="المدينة أو المنطقة" type="text" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">calendar_month</span>
+                            التاريخ
+                        </label>
+                        <input
+                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface"
+                            type="date" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label
+                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">group</span>
+                            عدد الضيوف
+                        </label>
+                        <select
+                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface">
+                            <option>أقل من 100</option>
+                            <option>100 - 300</option>
+                            <option>300 - 500</option>
+                            <option>أكثر من 500</option>
+                        </select>
+                    </div>
+                    <button
+                        class="bg-primary text-white rounded-xl h-full flex items-center justify-center gap-3 hover:bg-primary-container transition-all">
+                        <span class="material-symbols-outlined">search</span>
+                        ابحث الآن
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- Services Section -->
+        <section class="py-32 bg-surface">
+            <div class="container mx-auto px-8">
+                <div class="text-center mb-24">
+                    <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">تميزنا يكمن في
+                        التفاصيل</span>
+                    <h2 class="text-5xl font-extrabold text-on-surface">خدماتنا المميزة</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                    <!-- Service 1 -->
+                    <div
+                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        <div
+                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                            <span class="material-symbols-outlined text-3xl">restaurant</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">الضيافة</h3>
+                        <p class="text-on-surface-variant leading-relaxed">قوائم طعام معدّة بعناية من قبل أمهر الطهاة
+                            لتناسب أرقى الأذواق والمناسبات.</p>
+                    </div>
+                    <!-- Service 2 -->
+                    <div
+                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        <div
+                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                            <span class="material-symbols-outlined text-3xl">celebration</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">الزينة</h3>
+                        <p class="text-on-surface-variant leading-relaxed">تصاميم ديكور ساحرة وتنسيقات زهور طبيعية تضفي
+                            لمسة من الخيال على ليلتكم.</p>
+                    </div>
+                    <!-- Service 3 -->
+                    <div
+                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        <div
+                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                            <span class="material-symbols-outlined text-3xl">photo_camera</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">التصوير</h3>
+                        <p class="text-on-surface-variant leading-relaxed">توثيق أجمل اللحظات بعدسات محترفة لتبقى ذكرى
+                            خالدة للأجيال القادمة.</p>
+                    </div>
+                    <!-- Service 4 -->
+                    <div
+                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        <div
+                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                            <span class="material-symbols-outlined text-3xl">event_available</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">تنظيم الفعاليات</h3>
+                        <p class="text-on-surface-variant leading-relaxed">فريق متكامل لإدارة أدق تفاصيل الحفل لضمان سير
+                            ليلتكم بكل سلاسة وهدوء.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Halls Slider -->
+        <section class="py-24 bg-surface-container-low overflow-hidden">
+            <div class="container mx-auto px-8">
+
+                <div class="max-w-8xl mx-auto px-6 mb-12 flex justify-between items-end flex-row-reverse">
+                    <div class="text-right">
+                        <span class="text-secondary font-bold tracking-widest uppercase text-sm mb-2 block">اختياراتنا
+                            الفاخرة</span>
+                        <h2 class="text-4xl font-black text-primary">قاعات الشهر</h2>
+                    </div>
+                    <div class="flex gap-4">
+                        <button
+                            class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                        <button
+                            class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                            <span class="material-symbols-outlined">arrow_back</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-8 px-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8">
+                    <!-- Hall Card 1 -->
+                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
+                        <div
+                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
+                            <div class="relative h-72 overflow-hidden">
+                                <img alt="Grand Imperial Hall"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    data-alt="opulent ballroom with gold gilded pillars and warm candle lighting on white linen tables"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqnX48CI0Yqup6aCBU99VWGz33wCvSAxzY-iyG2vFqxhTr-usgBX7Gw1eYASvdEaozsmiFS7A9eIz4tZqy0XgJD5Jwzk4100IxzgGLmlg4x3mc4_gwT9CqNjLcPjKq7abx882wF30lXORVaEpPLPY8ubvMeihkbf_HNJYB8bH4Dv8s1OQRzVCOocHx-DFy2cSMuLmDPKcwsTI3M3PZuLPWzuY24Xgz_9qZ1Iity7IwNPZAKoDNkkXOik9f0vYwFRFqCbqZsBPgWW8D" />
+                                <div
+                                    class="absolute top-4 right-4 bg-secondary text-on-secondary px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                                    مميز</div>
+                            </div>
+                            <div class="p-8 text-right">
+                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة الجوهرة الملكية</h3>
+                                <div class="flex flex-col gap-3 mb-8">
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>الرياض، حي النخيل</span>
+                                        <span class="material-symbols-outlined text-sm">location_on</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>500 - 800 شخص</span>
+                                        <span class="material-symbols-outlined text-sm">groups</span>
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                    التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hall Card 2 -->
+                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
+                        <div
+                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
+                            <div class="relative h-72 overflow-hidden">
+                                <img alt="Crystal Palace Hall"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    data-alt="modern minimalist wedding hall with floor to ceiling windows, white orchids, and silver accents"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwfAV988F8jQGu8dUk5GjoXPuguay_7jWwzQgF4fF7w5RzBJcMwot4tgrICEMDfJ7JZI6ZuGUdV7zVdG6gRgoLHOypEm1il7Mc5jS4-eQUKYchGydtW8iqEq0FPMuG51ObkOC3Knvh_Zsb9E2FxsHbcxCGD6J5_z_NvllwPUqz4u0O9L80y50QgFQTrUHjLh3oFMoFmhrOomRLzYvJ825yCOXUG8k9zG2pjJQSDcghIhc4k0gUPJOWGnhSzmhUkkRW2LP1xVnOrV_6" />
+                            </div>
+                            <div class="p-8 text-right">
+                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة القصر الكريستالي</h3>
+                                <div class="flex flex-col gap-3 mb-8">
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>جدة، طريق الكورنيش</span>
+                                        <span class="material-symbols-outlined text-sm">location_on</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>300 - 600 شخص</span>
+                                        <span class="material-symbols-outlined text-sm">groups</span>
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                    التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hall Card 3 -->
+                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
+                        <div
+                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
+                            <div class="relative h-72 overflow-hidden">
+                                <img alt="Emerald Ballroom"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    data-alt="classic traditional wedding ballroom with red velvet curtains and intricate ceiling paintings"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvrwhOdjpK6cKkOjh_sgysNOGmWbOna4NiX76tL1-TF2eeVJT_vHUi3kO8Ko7Z3Do12XQPPUORSKvctC4dHM_8nnNJKR1U9HANDKzK66Il9KCKC6kQc6uS9Id_kmgg75Z6ybpuXT5njiAK2amTNjqYpcPV9rkFEMPK6LU1I1Q04QiePHbZrwEMUMXkIJFDm4d0yWZjOy6LAmJbv8AzYsDbnqoFvL56pzFy0-M4oAzJI67j5OuGqUo_QT-8ObJPw4cdTCweAMiaHkTU" />
+                            </div>
+                            <div class="p-8 text-right">
+                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة الزمردة الكلاسيكية</h3>
+                                <div class="flex flex-col gap-3 mb-8">
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>الدمام، المنطقة الشرقية</span>
+                                        <span class="material-symbols-outlined text-sm">location_on</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
+                                        <span>200 - 450 شخص</span>
+                                        <span class="material-symbols-outlined text-sm">groups</span>
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                    التفاصيل</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Halls Preview (Bento/Asymmetric Style) -->
+        <section class="py-32 bg-surface-container-low">
+            <div class="container mx-auto px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20">
+                    <div>
+                        <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">مساحات مصممة
+                            للإلهام</span>
+                        <h2 class="text-5xl font-extrabold text-on-surface">القاعات المختارة</h2>
+                    </div>
+                    <button
+                        class="mt-8 md:mt-0 text-primary font-bold flex items-center gap-2 border-b-2 border-tertiary-fixed pb-1 hover:gap-4 transition-all">
+                        تصفح جميع القاعات
+                        <span class="material-symbols-outlined rotate-180">arrow_forward</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
+
+                    <!-- Hall 2 -->
+                    <div
+                        class="md:col-span-4 group relative overflow-hidden rounded-lg bg-surface-container-lowest shadow-lg">
+                        <div class="aspect-square overflow-hidden">
+                            <img alt="Crystal Ballroom"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                data-alt="intimate crystal ballroom with high ceilings, glowing wall sconces, and white rose centerpieces on round tables"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjshvDY-6xnyDjqmZ6JOk4ZPcdaG8hgjAJm-YqS44H29AirlTrLO3w0rxxZjTjxm66-U6Yg-fY5SRwIBvPga9qW8Jn3YbXCE7yXdpb3Xtiz1EtwiFE5u7xtZktbuh2uuiFy4SfrxR3kb51_zVn3nNa9E4uXkIwwWK-jtld7tPHE6lBC1dPVcWfrkRiO52ERX62nDoTpGDvfvLOUhlkCGvVm2DOqqV9c2jVNjarsZElN5jWOmR_2jlBMG8CAwvVMaXTRJtEmwArC2eO" />
+                        </div>
+                        <div class="p-8 border-t-2 border-tertiary-fixed">
+                            <h3 class="text-2xl font-bold mb-4">قاعة الكريستال</h3>
+                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-sm">location_on</span> جدة،
+                                    الكورنيش</span>
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-sm">group</span> حتى 250 ضيف</span>
+                            </div>
+                            <button
+                                class="w-full border border-primary text-primary py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                التفاصيل</button>
+                        </div>
+                    </div>
+                    <!-- Hall 3 -->
+                    <div
+                        class="md:col-span-4 group relative overflow-hidden rounded-lg bg-surface-container-lowest shadow-lg">
+                        <div class="aspect-square overflow-hidden">
+                            <img alt="The Sapphire Suite"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                data-alt="modern sapphire-themed event space with cool blue lighting, sleek minimalist furniture, and a private terrace overlooking the city"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1coZ9MzLa4ml1CmETaTGZ2KDk2uyGapd6WKamH4pbCYzC1zHKF-xAvkTD1BsE_SV0pZi096bSFOFogEHXBEol7QWlgm69n802XEopdlJ8L-dJAodyfXsBYa6Au1U7uKP4QIcfzr4NWs-7ylLPJHtBT5p_Np_PDmy5AebOdzQegVFMg8lXJmPIXTsqpg73JLIYC0olDd2M8JUDl-y8H_vAxrBZak2aCaYrNkkZQQSvu8F_dZufjsofJJU59jH_Ay9jvHBTEhAu627V" />
+                        </div>
+                        <div class="p-8 border-t-2 border-tertiary-fixed">
+                            <h3 class="text-2xl font-bold mb-4">جناح الياقوت</h3>
+                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-sm">location_on</span> الخبر،
+                                    الواجهة</span>
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-sm">group</span> حتى 150 ضيف</span>
+                            </div>
+                            <button
+                                class="w-full border border-primary text-primary py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                التفاصيل</button>
+                        </div>
+                    </div>
+                    <!-- Decorative Card/CTA -->
+                    <div
+                        class="md:col-span-4 bg-primary-container p-12 rounded-lg flex flex-col justify-center text-white relative overflow-hidden">
+                        <div class="relative z-10">
+                            <h3 class="text-4xl font-extrabold mb-6">هل تبحث عن تصميم خاص لمناسبتك؟</h3>
+                            <p class="text-lg opacity-80 mb-8 max-w-xl">نحن نوفر خدمات تصميم مخصصة بالكامل لتناسب رؤيتكم
+                                الخاصة، من الديكور إلى أدق تفاصيل الضيافة.</p>
+                            <button
+                                class="bg-tertiary-fixed text-on-tertiary-fixed px-10 py-4 rounded-full font-bold hover:brightness-110 transition-all">استشارة
+                                مجانية</button>
+                        </div>
+                        <div
+                            class="absolute left-[-5%] bottom-[-20%] w-64 h-64 bg-primary rounded-full blur-[80px] opacity-40">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Testimonials -->
+        <section class="py-32 bg-surface">
+            <div class="container mx-auto px-8">
+                <div class="text-center mb-24">
+                    <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">شهادات نعتز
+                        بها</span>
+                    <h2 class="text-5xl font-extrabold text-on-surface">آراء العملاء</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
+                        <div class="flex text-tertiary-fixed-dim mb-6">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                        </div>
+                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"كانت ليلة لا تُنسى!
+                            اهتمام فريق رويال أميثيست بالتفاصيل جعل حفل زفافنا يفوق كل التوقعات. الخدمة كانت راقية
+                            جداً."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                            <div>
+                                <h4 class="font-bold">سارة وأحمد</h4>
+                                <span class="text-xs text-on-surface-variant">حفل زفاف - أكتوبر 2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
+                        <div class="flex text-tertiary-fixed-dim mb-6">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                        </div>
+                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"المكان قمة في الفخامة
+                            والتعامل احترافي للغاية. الضيوف انبهروا بجودة الطعام والترتيبات."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                            <div>
+                                <h4 class="font-bold">عبدالعزيز الفهد</h4>
+                                <span class="text-xs text-on-surface-variant">مناسبة خاصة - سبتمبر 2023</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
+                        <div class="flex text-tertiary-fixed-dim mb-6">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                        </div>
+                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"أفضل قرار اتخذناه هو
+                            اختيار قاعة الكريستال. التنظيم كان مثالياً ولم نضطر للقلق بشأن أي شيء."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                            <div>
+                                <h4 class="font-bold">نورة محمد</h4>
+                                <span class="text-xs text-on-surface-variant">حفل زفاف - ديسمبر 2023</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Contact Section -->
+        <section class="py-32 bg-surface-container-low">
+            <div class="container mx-auto px-8 max-w-6xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                    <div>
+                        <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">تواصل
+                            معنا</span>
+                        <h2 class="text-5xl font-extrabold text-on-surface mb-8">ابدأ رحلتك معنا</h2>
+                        <p class="text-lg text-on-surface-variant mb-12 leading-relaxed">فريقنا جاهز للإجابة على جميع
+                            استفساراتكم ومساعدتكم في اختيار القاعة الأمثل لمناسبتكم الخاصة.</p>
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-primary">phone</span>
+                                </div>
+                                <div>
+                                    <span class="block text-sm text-on-surface-variant">الرقم الموحد</span>
+                                    <span class="text-xl font-bold">9200 12345</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-primary">mail</span>
+                                </div>
+                                <div>
+                                    <span class="block text-sm text-on-surface-variant">البريد الإلكتروني</span>
+                                    <span class="text-xl font-bold">hello@royalamethyst.com</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-surface-container-lowest p-12 rounded-lg shadow-xl border-t border-tertiary-fixed/20">
+                        <form class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold opacity-70">الاسم الكامل</label>
+                                <input
+                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none"
+                                    placeholder="أدخل اسمك هنا" type="text" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold opacity-70">البريد الإلكتروني</label>
+                                <input
+                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none"
+                                    placeholder="example@mail.com" type="email" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold opacity-70">رسالتك</label>
+                                <textarea
+                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none resize-none"
+                                    placeholder="كيف يمكننا مساعدتك؟" rows="4"></textarea>
+                            </div>
+                            <button
+                                class="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg hover:bg-primary-container transition-all shadow-lg shadow-primary/20">إرسال
+                                الرسالة</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-[#f5f3ee] dark:bg-[#121210] w-full pt-20 pb-10 px-12 border-t border-[#ffdea5]/20">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto text-start">
+            <!-- Brand Info -->
+            <div class="col-span-1 md:col-span-1">
+                <div class="font-serif text-3xl text-[#531669] dark:text-[#f9d8ff] mb-4">Royal Amethyst</div>
+                <p
+                    class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 leading-relaxed font-sans text-xs uppercase tracking-widest">
+                    رويل أميثيست هي الوجهة الأولى لتنظيم حفلات الزفاف الفاخرة والمناسبات الملكية في المملكة.
+                </p>
+            </div>
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">روابط
+                    سريعة</h4>
+                <ul class="space-y-4">
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">قاعاتنا</a></li>
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">خدماتنا</a></li>
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">المعرض</a></li>
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">من نحن</a></li>
+                </ul>
+            </div>
+            <!-- Support -->
+            <div>
+                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">الدعم
+                </h4>
+                <ul class="space-y-4">
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">الأسئلة الشائعة</a></li>
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">سياسة الحجز</a></li>
+                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
+                            href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <!-- Social & Newsletter -->
+            <div>
+                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">اشترك
+                    معنا</h4>
+                <p class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 mb-6 font-sans text-xs uppercase tracking-widest">
+                    احصل على عروضنا الحصرية وآخر الأخبار.</p>
+                <div class="flex">
+                    <input
+                        class="bg-white/50 border-b border-[#6C3082]/30 px-4 py-2 w-full outline-none focus:border-[#6C3082]"
+                        placeholder="بريدك الإلكتروني" type="email" />
+                    <button class="bg-[#6C3082] text-white px-4 py-2"><span
+                            class="material-symbols-outlined">send</span></button>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Bottom -->
+        <div
+            class="max-w-7xl mx-auto mt-20 pt-10 border-t border-[#1b1c19]/10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 font-sans text-xs uppercase tracking-widest">© 2024 Royal
+                Amethyst Curatorship. All rights reserved.</p>
+            <div class="flex gap-8">
+                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
+                    href="#">Privacy Policy</a>
+                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
+                    href="#">Terms of Service</a>
+                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
+                    href="#">Cookie Policy</a>
+            </div>
+        </div>
+
+    </footer>
+</body>
+
+</html>
