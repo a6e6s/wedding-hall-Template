@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Royal Amethyst | رويل أميثيست لتنظيم المناسبات</title>
+    <title>Royal Amethyst | قاعة لتنظيم المناسبات</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&amp;family=Cairo:wght@300;400;600;700&amp;family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap"
@@ -13,9 +13,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
+    <!-- Splide.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -68,7 +68,9 @@
                         "surface-tint": "#824598",
                         "surface-container-high": "#eae8e3",
                         "primary": "#531669",
-                        "surface-variant": "#e4e2dd"
+                        "surface-variant": "#e4e2dd",
+                        "footer-dark": "#1a0a24",
+                        "footer-mid": "#2a1240",
                     },
                     fontFamily: {
                         "headline": ["Tajawal", "Noto Serif"],
@@ -76,6 +78,32 @@
                         "label": ["Cairo", "Inter"]
                     },
                     borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                    keyframes: {
+                        'fade-up': {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        'fade-in': {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        'pulse-soft': {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(83,22,105,0.3)' },
+                            '50%': { boxShadow: '0 0 0 12px rgba(83,22,105,0)' }
+                        },
+                    },
+                    animation: {
+                        'fade-up': 'fade-up 0.8s ease-out forwards',
+                        'fade-up-delay': 'fade-up 0.8s 0.2s ease-out forwards',
+                        'fade-up-delay-2': 'fade-up 0.8s 0.4s ease-out forwards',
+                        'fade-in': 'fade-in 1s ease-out forwards',
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-soft': 'pulse-soft 2.5s ease-in-out infinite',
+                    }
                 },
             },
         }
@@ -94,273 +122,544 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+
+        /* Scroll-triggered animation observer */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar hide for slider */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(251, 249, 244, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #f9d8ff 0%, #ffdea5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Social icon hover glow */
+        .social-icon {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .social-icon:hover {
+            transform: scale(1.15) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 48, 130, 0.4);
+        }
+
+        /* Input focus glow */
+        .input-glow:focus {
+            box-shadow: 0 0 0 3px rgba(83, 22, 105, 0.15);
+        }
+
+        /* Heart animation */
+        .heart-btn:hover .heart-icon {
+            transform: scale(1.3);
+        }
+
+        .heart-btn .heart-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hero Carousel */
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            z-index: 0;
+        }
+        .hero-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Slide text entrance */
+        .hero-slide-content > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .hero-slide.active .hero-slide-content > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+        .hero-slide.active .hero-slide-content > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+        .hero-slide.active .hero-slide-content > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.7s; }
     </style>
 </head>
 
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
     <!-- TopNavBar -->
-    <header
-        class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 backdrop-blur-xl shadow-[0_10px_40px_0px_rgba(27,28,25,0.05)]">
-        <nav class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
-            <!-- Brand Logo (Right side in RTL) -->
+    <header class="fixed top-0 w-full z-50 glass shadow-[0_4px_30px_rgba(83,22,105,0.06)]">
+        <nav class="flex justify-between items-center px-6 md:px-10 py-3.5 max-w-screen-2xl mx-auto">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Royal Amethyst" class="h-16" />
+            </div>
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex gap-1 items-center bg-surface-container-low/60 rounded-full px-2 py-1.5">
+                <a class="text-primary bg-primary-fixed/40 px-5 py-2 rounded-full font-bold text-sm transition-all"
+                    href="#hero">الرئيسية</a>
+                <a class="text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 px-5 py-2 rounded-full text-sm transition-all duration-300"
+                    href="#halls">القاعات</a>
+                <a class="text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 px-5 py-2 rounded-full text-sm transition-all duration-300"
+                    href="#services">الخدمات</a>
+                <a class="text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 px-5 py-2 rounded-full text-sm transition-all duration-300"
+                    href="#testimonials">آراء العملاء</a>
+                <a class="text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 px-5 py-2 rounded-full text-sm transition-all duration-300"
+                    href="#contact">تواصل معنا</a>
+            </div>
+            <!-- Actions -->
             <div class="flex items-center gap-4">
-                <span class="font-serif text-2xl italic text-[#531669] dark:text-[#f9d8ff] font-bold">
-                    <img src="logo.png" height="50px" />
-                </span>
-            </div>
-            <!-- Navigation Links (Center) -->
-            <div class="hidden md:flex gap-8 items-center">
-                <a class="text-[#6C3082] border-b-2 border-[#ffdea5] pb-1 font-bold font-serif text-sm tracking-wide"
-                    href="#">الرئيسية</a>
-                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
-                    href="#">القاعات</a>
-                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
-                    href="#">الخدمات</a>
-                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
-                    href="#">آراء العملاء</a>
-                <a class="text-[#1b1c19]/70 hover:text-[#6C3082] transition-colors font-serif text-sm tracking-wide"
-                    href="#">اتصل بنا</a>
-            </div>
-            <!-- Actions (Left side in RTL) -->
-            <div class="flex items-center gap-6">
                 <div
-                    class="flex items-center gap-2 text-[#6C3082] cursor-pointer hover:bg-[#f5f3ee] p-2 rounded-full transition-all">
-                    <span class="material-symbols-outlined">language</span>
+                    class="flex items-center gap-1.5 text-primary cursor-pointer hover:bg-primary-fixed/20 p-2.5 rounded-full transition-all duration-300">
+                    <span class="material-symbols-outlined text-xl">language</span>
                     <span class="text-xs font-bold">EN</span>
                 </div>
                 <button
-                    class="bg-primary text-on-primary px-8 py-3 rounded-xl font-bold hover:bg-primary-container transition-all scale-95 active:scale-90 duration-300">
+                    class="bg-gradient-to-l from-primary to-primary-container text-on-primary px-7 py-3 rounded-full font-bold hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-[1.03] active:scale-95 animate-pulse-soft">
                     احجز الآن
+                </button>
+                <!-- Mobile menu button -->
+                <button class="lg:hidden text-primary p-2"
+                    onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
             </div>
         </nav>
-    </header>
-    <main class="pt-20">
-        <!-- Hero Section -->
-        <section class="relative h-[972px] flex items-center overflow-hidden">
-            <div class="absolute inset-0 z-0">
-                <img alt="Grand wedding ballroom" class="w-full h-full object-cover"
-                    data-alt="luxurious grand wedding ballroom with violet lighting, crystal chandeliers, and opulent floral arrangements at night"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW9AviSONQKTZYGnGuzaXshLNOvyPbV_5AAUHKeS5gvmIyrkxV53fiONWHZf49fj0N3c7azDEGeWrKFOr5GmqAkNY_eQiGUUP9WDX8uBNoBuMTkiG6zJdeEyW68xL7xvcRh7wTjpcFEZpIreipsZPK1jqLk8LtBItiGshgKVQllBI3m7Fl5Jo-pEvjsdqwxteJbGpeuFhhIFaxyzl0n4H3cH5f52EfT68JJ_TNNNIz3CjTQ2ltwBU6_i2tTtTgS-4Lqwx98aPJfBNH" />
-                <div class="absolute inset-0 bg-gradient-to-l from-primary/60 to-transparent"></div>
+        <!-- Mobile menu -->
+        <div id="mobileMenu" class="hidden lg:hidden glass border-t border-outline-variant/20 px-6 pb-4">
+            <div class="flex flex-col gap-1 pt-2">
+                <a class="text-primary font-bold py-3 px-4 rounded-lg bg-primary-fixed/20" href="#hero">الرئيسية</a>
+                <a class="text-on-surface-variant py-3 px-4 rounded-lg hover:bg-primary-fixed/10"
+                    href="#halls">القاعات</a>
+                <a class="text-on-surface-variant py-3 px-4 rounded-lg hover:bg-primary-fixed/10"
+                    href="#services">الخدمات</a>
+                <a class="text-on-surface-variant py-3 px-4 rounded-lg hover:bg-primary-fixed/10"
+                    href="#testimonials">آراء العملاء</a>
+                <a class="text-on-surface-variant py-3 px-4 rounded-lg hover:bg-primary-fixed/10" href="#contact">تواصل
+                    معنا</a>
             </div>
-            <div class="relative z-10 container mx-auto px-8 lg:px-20 text-white">
-                <div class="max-w-3xl">
-                    <h1 class="text-6xl md:text-8xl font-extrabold mb-8 leading-tight drop-shadow-xl">اعثر على قاعة
-                        زفافك المثالية</h1>
-                    <p class="text-xl md:text-2xl mb-12 font-light opacity-90 leading-relaxed max-w-2xl">نحن نحول أحلامك
-                        إلى حقيقة في أجواء من الفخامة الملكية والجمال الخالد.</p>
+        </div>
+    </header>
+
+    <main class="pt-[72px]">
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-[100vh] flex items-center overflow-hidden">
+
+            <!-- Hero Carousel Slides -->
+            <div class="hero-slide active">
+                <img alt="Grand wedding ballroom" src="hall1.jpeg" />
+                <div class="absolute inset-0 bg-gradient-to-l from-[#531669]/80 via-[#531669]/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1a0a24]/60 via-transparent to-[#531669]/20"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 lg:px-20">
+                        <div class="max-w-3xl hero-slide-content">
+                            <span class="inline-block text-tertiary-fixed text-sm font-bold tracking-[0.3em] uppercase mb-6">✦ تجربة حجز فاخرة ✦</span>
+                            <h2 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-[1.1] text-white">اعثر على قاعة<br /><span class="gradient-text">زفافك المثالية</span></h2>
+                            <p class="text-lg md:text-xl font-light leading-relaxed max-w-2xl text-white/85">نحن نحول أحلامك إلى حقيقة في أجواء من الفخامة الملكية والجمال الخالد.</p>
+                        </div>
+                    </div>
                 </div>
-                <!-- Search Form -->
+            </div>
+            <div class="hero-slide">
+                <img alt="Elegant crystal hall" src="hall2.jpeg" />
+                <div class="absolute inset-0 bg-gradient-to-l from-[#531669]/80 via-[#531669]/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1a0a24]/60 via-transparent to-[#531669]/20"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 lg:px-20">
+                        <div class="max-w-3xl hero-slide-content">
+                            <span class="inline-block text-tertiary-fixed text-sm font-bold tracking-[0.3em] uppercase mb-6">✦ أجواء ملكية ✦</span>
+                            <h2 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-[1.1] text-white">قاعات بتصاميم<br /><span class="gradient-text">ساحرة وأنيقة</span></h2>
+                            <p class="text-lg md:text-xl font-light leading-relaxed max-w-2xl text-white/85">اكتشف مجموعة فريدة من القاعات الفاخرة المصممة لتناسب كل الأذواق والمناسبات.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-slide">
+                <img alt="Luxurious wedding setup" src="hall3.jpeg" />
+                <div class="absolute inset-0 bg-gradient-to-l from-[#531669]/80 via-[#531669]/40 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[#1a0a24]/60 via-transparent to-[#531669]/20"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 lg:px-20">
+                        <div class="max-w-3xl hero-slide-content">
+                            <span class="inline-block text-tertiary-fixed text-sm font-bold tracking-[0.3em] uppercase mb-6">✦ خدمة متكاملة ✦</span>
+                            <h2 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-[1.1] text-white">ليلة العمر<br /><span class="gradient-text">تبدأ من هنا</span></h2>
+                            <p class="text-lg md:text-xl font-light leading-relaxed max-w-2xl text-white/85">من التخطيط إلى التنفيذ، فريقنا يضمن لك تجربة استثنائية لا تُنسى.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decorative floating orbs (static) -->
+            <div
+                class="absolute top-1/4 left-1/4 w-72 h-72 bg-[#eeb1ff]/10 rounded-full blur-[100px] animate-float z-[1] pointer-events-none">
+            </div>
+            <div class="absolute bottom-1/3 right-1/3 w-96 h-96 bg-[#ffdea5]/8 rounded-full blur-[120px] animate-float z-[1] pointer-events-none"
+                style="animation-delay: -2s;"></div>
+
+            <!-- Static overlay: Search Form + Trust Badges -->
+            <div
+                class="relative z-10 container mx-auto px-6 lg:px-20 text-white py-20 flex flex-col justify-end min-h-[100vh]">
+                <!-- Spacer to push content down -->
+                <div class="flex-1"></div>
+
+                <!-- Enhanced Search Form with Glassmorphism -->
                 <div
-                    class="bg-surface/95 backdrop-blur-md p-8 rounded-lg shadow-2xl max-w-5xl mt-12 grid grid-cols-1 md:grid-cols-4 gap-8 border-t-2 border-tertiary-fixed">
-                    <div class="flex flex-col gap-2">
-                        <label
-                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">location_on</span>
-                            الموقع
-                        </label>
-                        <input
-                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface"
-                            placeholder="المدينة أو المنطقة" type="text" />
+                    class="glass rounded-2xl shadow-[0_20px_60px_rgba(83,22,105,0.15)] max-w-5xl p-2 border border-white/10">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
+                        <div class="flex flex-col gap-1.5 p-5 md:border-l border-outline-variant/15">
+                            <label
+                                class="text-xs font-bold text-on-surface-variant tracking-wider flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">location_on</span>
+                                الموقع
+                            </label>
+                            <input
+                                class="bg-transparent py-2 text-on-surface placeholder:text-on-surface-variant/50 outline-none text-sm"
+                                placeholder="المدينة أو المنطقة" type="text" />
+                        </div>
+                        <div class="flex flex-col gap-1.5 p-5 md:border-l border-outline-variant/15">
+                            <label
+                                class="text-xs font-bold text-on-surface-variant tracking-wider flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">calendar_month</span>
+                                التاريخ
+                            </label>
+                            <input
+                                class="bg-transparent py-2 text-on-surface placeholder:text-on-surface-variant/50 outline-none text-sm"
+                                type="date" />
+                        </div>
+                        <div class="flex flex-col gap-1.5 p-5 md:border-l border-outline-variant/15">
+                            <label
+                                class="text-xs font-bold text-on-surface-variant tracking-wider flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-base">group</span>
+                                عدد الضيوف
+                            </label>
+                            <select class="bg-transparent py-2 text-on-surface outline-none text-sm">
+                                <option>أقل من 100</option>
+                                <option>100 - 300</option>
+                                <option>300 - 500</option>
+                                <option>أكثر من 500</option>
+                            </select>
+                        </div>
+                        <div class="p-2">
+                            <button
+                                class="bg-gradient-to-l from-primary to-primary-container text-white rounded-xl w-full h-full min-h-[56px] flex items-center justify-center gap-3 font-bold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-[1.02]">
+                                <span class="material-symbols-outlined">search</span>
+                                ابحث الآن
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-2">
-                        <label
-                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">calendar_month</span>
-                            التاريخ
-                        </label>
-                        <input
-                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface"
-                            type="date" />
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <label
-                            class="text-xs font-bold text-on-surface-variant uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">group</span>
-                            عدد الضيوف
-                        </label>
-                        <select
-                            class="bg-transparent border-b border-outline-variant/40 py-2 focus:border-primary transition-colors outline-none text-on-surface">
-                            <option>أقل من 100</option>
-                            <option>100 - 300</option>
-                            <option>300 - 500</option>
-                            <option>أكثر من 500</option>
-                        </select>
-                    </div>
-                    <button
-                        class="bg-primary text-white rounded-xl h-full flex items-center justify-center gap-3 hover:bg-primary-container transition-all">
-                        <span class="material-symbols-outlined">search</span>
-                        ابحث الآن
-                    </button>
                 </div>
+
+                <!-- Trust badges -->
+                <div class="flex gap-8 mt-10 flex-wrap">
+                    <div class="flex items-center gap-2 text-white/60 text-sm">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-lg"
+                            style="font-variation-settings: 'FILL' 1;">verified</span>
+                        +500 مناسبة ناجحة
+                    </div>
+                    <div class="flex items-center gap-2 text-white/60 text-sm">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-lg"
+                            style="font-variation-settings: 'FILL' 1;">star</span>
+                        تقييم 4.9 من 5
+                    </div>
+                    <div class="flex items-center gap-2 text-white/60 text-sm">
+                        <span class="material-symbols-outlined text-tertiary-fixed text-lg"
+                            style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                        ضمان جودة الخدمة
+                    </div>
+                </div>
+
+                <!-- Slide indicators / pagination -->
+                <div class="flex gap-3 mt-8" id="hero-pagination"></div>
             </div>
         </section>
         <!-- Services Section -->
-        <section class="py-32 bg-surface">
-            <div class="container mx-auto px-8">
-                <div class="text-center mb-24">
-                    <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">تميزنا يكمن في
-                        التفاصيل</span>
-                    <h2 class="text-5xl font-extrabold text-on-surface">خدماتنا المميزة</h2>
+        <section id="services" class="py-32 bg-surface">
+            <div class="container mx-auto px-6 md:px-8">
+                <div class="text-center mb-20 reveal">
+                    <span
+                        class="inline-block text-primary font-bold tracking-[0.3em] text-xs uppercase mb-5 bg-primary-fixed/40 px-5 py-2 rounded-full">تميزنا
+                        يكمن في التفاصيل</span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface mt-3">خدماتنا المميزة</h2>
+                    <p class="text-on-surface-variant mt-4 max-w-xl mx-auto text-lg leading-relaxed">نقدم مجموعة متكاملة
+                        من الخدمات لجعل مناسبتكم استثنائية</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal">
                     <!-- Service 1 -->
                     <div
-                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        class="group p-10 bg-surface-container-low rounded-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(83,22,105,0.1)] relative overflow-hidden">
                         <div
-                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                            <span class="material-symbols-outlined text-3xl">restaurant</span>
+                            class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">الضيافة</h3>
-                        <p class="text-on-surface-variant leading-relaxed">قوائم طعام معدّة بعناية من قبل أمهر الطهاة
-                            لتناسب أرقى الأذواق والمناسبات.</p>
+                        <div class="relative z-10">
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-primary-fixed to-primary-fixed-dim rounded-2xl flex items-center justify-center mb-8 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:rounded-xl group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary">
+                                <span class="material-symbols-outlined text-3xl">restaurant</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">الضيافة</h3>
+                            <p class="text-on-surface-variant leading-relaxed text-[15px]">قوائم طعام معدّة بعناية من
+                                قبل أمهر الطهاة لتناسب أرقى الأذواق والمناسبات.</p>
+                        </div>
                     </div>
                     <!-- Service 2 -->
                     <div
-                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        class="group p-10 bg-surface-container-low rounded-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(83,22,105,0.1)] relative overflow-hidden">
                         <div
-                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                            <span class="material-symbols-outlined text-3xl">celebration</span>
+                            class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">الزينة</h3>
-                        <p class="text-on-surface-variant leading-relaxed">تصاميم ديكور ساحرة وتنسيقات زهور طبيعية تضفي
-                            لمسة من الخيال على ليلتكم.</p>
+                        <div class="relative z-10">
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-primary-fixed to-primary-fixed-dim rounded-2xl flex items-center justify-center mb-8 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:rounded-xl group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary">
+                                <span class="material-symbols-outlined text-3xl">celebration</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">الزينة</h3>
+                            <p class="text-on-surface-variant leading-relaxed text-[15px]">تصاميم ديكور ساحرة وتنسيقات
+                                زهور طبيعية تضفي لمسة من الخيال على ليلتكم.</p>
+                        </div>
                     </div>
                     <!-- Service 3 -->
                     <div
-                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        class="group p-10 bg-surface-container-low rounded-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(83,22,105,0.1)] relative overflow-hidden">
                         <div
-                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                            <span class="material-symbols-outlined text-3xl">photo_camera</span>
+                            class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">التصوير</h3>
-                        <p class="text-on-surface-variant leading-relaxed">توثيق أجمل اللحظات بعدسات محترفة لتبقى ذكرى
-                            خالدة للأجيال القادمة.</p>
+                        <div class="relative z-10">
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-primary-fixed to-primary-fixed-dim rounded-2xl flex items-center justify-center mb-8 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:rounded-xl group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary">
+                                <span class="material-symbols-outlined text-3xl">photo_camera</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">التصوير</h3>
+                            <p class="text-on-surface-variant leading-relaxed text-[15px]">توثيق أجمل اللحظات بعدسات
+                                محترفة لتبقى ذكرى خالدة للأجيال القادمة.</p>
+                        </div>
                     </div>
                     <!-- Service 4 -->
                     <div
-                        class="group p-10 bg-surface-container-low rounded-lg transition-all hover:-translate-y-2 border-t border-tertiary-fixed/0 hover:border-tertiary-fixed">
+                        class="group p-10 bg-surface-container-low rounded-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(83,22,105,0.1)] relative overflow-hidden">
                         <div
-                            class="w-16 h-16 bg-primary-fixed rounded-full flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                            <span class="material-symbols-outlined text-3xl">event_available</span>
+                            class="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">تنظيم الفعاليات</h3>
-                        <p class="text-on-surface-variant leading-relaxed">فريق متكامل لإدارة أدق تفاصيل الحفل لضمان سير
-                            ليلتكم بكل سلاسة وهدوء.</p>
+                        <div class="relative z-10">
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-primary-fixed to-primary-fixed-dim rounded-2xl flex items-center justify-center mb-8 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:rounded-xl group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary">
+                                <span class="material-symbols-outlined text-3xl">event_available</span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">تنظيم الفعاليات</h3>
+                            <p class="text-on-surface-variant leading-relaxed text-[15px]">فريق متكامل لإدارة أدق تفاصيل
+                                الحفل لضمان سير ليلتكم بكل سلاسة وهدوء.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Featured Halls Slider -->
-        <section class="py-24 bg-surface-container-low overflow-hidden">
-            <div class="container mx-auto px-8">
-
-                <div class="max-w-8xl mx-auto px-6 mb-12 flex justify-between items-end flex-row-reverse">
+        <section id="halls" class="py-28 bg-surface-container-low overflow-hidden">
+            <div class="container mx-auto px-6 md:px-8">
+                <div class="max-w-8xl mx-auto mb-14 flex justify-between items-end flex-row-reverse reveal">
                     <div class="text-right">
-                        <span class="text-secondary font-bold tracking-widest uppercase text-sm mb-2 block">اختياراتنا
+                        <span
+                            class="inline-block text-secondary font-bold tracking-widest uppercase text-xs mb-3 bg-secondary-fixed/40 px-4 py-1.5 rounded-full">اختياراتنا
                             الفاخرة</span>
-                        <h2 class="text-4xl font-black text-primary">قاعات الشهر</h2>
+                        <h2 class="text-4xl font-black text-primary mt-2">قاعات الشهر</h2>
                     </div>
-                    <div class="flex gap-4">
-                        <button
-                            class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                    <div class="flex gap-3">
+                        <button id="halls-prev"
+                            class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/20">
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </button>
-                        <button
-                            class="w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all">
+                        <button id="halls-next"
+                            class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-primary/20">
                             <span class="material-symbols-outlined">arrow_back</span>
                         </button>
                     </div>
                 </div>
-                <div class="flex gap-8 px-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8">
-                    <!-- Hall Card 1 -->
-                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
-                        <div
-                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
-                            <div class="relative h-72 overflow-hidden">
-                                <img alt="Grand Imperial Hall"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    data-alt="opulent ballroom with gold gilded pillars and warm candle lighting on white linen tables"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqnX48CI0Yqup6aCBU99VWGz33wCvSAxzY-iyG2vFqxhTr-usgBX7Gw1eYASvdEaozsmiFS7A9eIz4tZqy0XgJD5Jwzk4100IxzgGLmlg4x3mc4_gwT9CqNjLcPjKq7abx882wF30lXORVaEpPLPY8ubvMeihkbf_HNJYB8bH4Dv8s1OQRzVCOocHx-DFy2cSMuLmDPKcwsTI3M3PZuLPWzuY24Xgz_9qZ1Iity7IwNPZAKoDNkkXOik9f0vYwFRFqCbqZsBPgWW8D" />
+                <div id="halls-splide" class="splide" dir="rtl">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <!-- Hall Card 1 -->
+                            <li class="splide__slide">
                                 <div
-                                    class="absolute top-4 right-4 bg-secondary text-on-secondary px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                    مميز</div>
-                            </div>
-                            <div class="p-8 text-right">
-                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة الجوهرة الملكية</h3>
-                                <div class="flex flex-col gap-3 mb-8">
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>الرياض، حي النخيل</span>
-                                        <span class="material-symbols-outlined text-sm">location_on</span>
+                                    class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_20px_50px_rgba(83,22,105,0.14)] transition-all duration-500 group hover:-translate-y-2">
+                                    <div class="relative h-72 overflow-hidden">
+                                        <img alt="Grand Imperial Hall"
+                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            src="hall1.jpeg" />
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        </div>
+                                        <div
+                                            class="absolute top-4 right-4 bg-gradient-to-l from-[#ffdea5] to-[#e9c176] text-on-tertiary-fixed px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                            ✦ مميز
+                                        </div>
+                                        <button
+                                            class="heart-btn absolute top-4 left-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all group/heart">
+                                            <span
+                                                class="material-symbols-outlined text-xl text-on-surface-variant group-hover/heart:text-red-500 heart-icon">favorite</span>
+                                        </button>
                                     </div>
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>500 - 800 شخص</span>
-                                        <span class="material-symbols-outlined text-sm">groups</span>
-                                    </div>
-                                </div>
-                                <button
-                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
-                                    التفاصيل</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Hall Card 2 -->
-                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
-                        <div
-                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
-                            <div class="relative h-72 overflow-hidden">
-                                <img alt="Crystal Palace Hall"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    data-alt="modern minimalist wedding hall with floor to ceiling windows, white orchids, and silver accents"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwfAV988F8jQGu8dUk5GjoXPuguay_7jWwzQgF4fF7w5RzBJcMwot4tgrICEMDfJ7JZI6ZuGUdV7zVdG6gRgoLHOypEm1il7Mc5jS4-eQUKYchGydtW8iqEq0FPMuG51ObkOC3Knvh_Zsb9E2FxsHbcxCGD6J5_z_NvllwPUqz4u0O9L80y50QgFQTrUHjLh3oFMoFmhrOomRLzYvJ825yCOXUG8k9zG2pjJQSDcghIhc4k0gUPJOWGnhSzmhUkkRW2LP1xVnOrV_6" />
-                            </div>
-                            <div class="p-8 text-right">
-                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة القصر الكريستالي</h3>
-                                <div class="flex flex-col gap-3 mb-8">
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>جدة، طريق الكورنيش</span>
-                                        <span class="material-symbols-outlined text-sm">location_on</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>300 - 600 شخص</span>
-                                        <span class="material-symbols-outlined text-sm">groups</span>
-                                    </div>
-                                </div>
-                                <button
-                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
-                                    التفاصيل</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Hall Card 3 -->
-                    <div class="min-w-[350px] md:min-w-[450px] snap-center">
-                        <div
-                            class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-2xl transition-all group border border-transparent hover:border-primary/10">
-                            <div class="relative h-72 overflow-hidden">
-                                <img alt="Emerald Ballroom"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    data-alt="classic traditional wedding ballroom with red velvet curtains and intricate ceiling paintings"
-                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvrwhOdjpK6cKkOjh_sgysNOGmWbOna4NiX76tL1-TF2eeVJT_vHUi3kO8Ko7Z3Do12XQPPUORSKvctC4dHM_8nnNJKR1U9HANDKzK66Il9KCKC6kQc6uS9Id_kmgg75Z6ybpuXT5njiAK2amTNjqYpcPV9rkFEMPK6LU1I1Q04QiePHbZrwEMUMXkIJFDm4d0yWZjOy6LAmJbv8AzYsDbnqoFvL56pzFy0-M4oAzJI67j5OuGqUo_QT-8ObJPw4cdTCweAMiaHkTU" />
-                            </div>
-                            <div class="p-8 text-right">
-                                <h3 class="text-2xl font-bold text-primary mb-4">قاعة الزمردة الكلاسيكية</h3>
-                                <div class="flex flex-col gap-3 mb-8">
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>الدمام، المنطقة الشرقية</span>
-                                        <span class="material-symbols-outlined text-sm">location_on</span>
-                                    </div>
-                                    <div class="flex items-center gap-2 justify-end text-on-surface-variant">
-                                        <span>200 - 450 شخص</span>
-                                        <span class="material-symbols-outlined text-sm">groups</span>
+                                    <div class="p-7 text-right">
+                                        <h3 class="text-xl font-bold text-on-surface mb-3">قاعة الجوهرة الملكية</h3>
+                                        <div class="flex flex-col gap-2 mb-6">
+                                            <div
+                                                class="flex items-center gap-2 justify-end text-on-surface-variant text-sm">
+                                                <span>الرياض، حي النخيل</span>
+                                                <span
+                                                    class="material-symbols-outlined text-base text-primary/60">location_on</span>
+                                            </div>
+                                            <div
+                                                class="flex items-center gap-4 justify-end text-on-surface-variant text-sm">
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-on-surface font-bold">500 - 800</span> شخص
+                                                    <span
+                                                        class="material-symbols-outlined text-base text-primary/60">groups</span>
+                                                </span>
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-tertiary-fixed-dim font-bold">4.9</span>
+                                                    <span
+                                                        class="material-symbols-outlined text-tertiary-fixed-dim text-base"
+                                                        style="font-variation-settings: 'FILL' 1;">star</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="w-full py-3.5 bg-primary/5 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300">عرض
+                                            التفاصيل</button>
                                     </div>
                                 </div>
-                                <button
-                                    class="w-full py-4 border border-primary/20 rounded-xl text-primary font-bold hover:bg-primary hover:text-white transition-all">عرض
-                                    التفاصيل</button>
-                            </div>
-                        </div>
+                            </li>
+                            <!-- Hall Card 2 -->
+                            <li class="splide__slide">
+                                <div
+                                    class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_20px_50px_rgba(83,22,105,0.14)] transition-all duration-500 group hover:-translate-y-2">
+                                    <div class="relative h-72 overflow-hidden">
+                                        <img alt="Crystal Palace Hall"
+                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            src="hall2.jpeg" />
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        </div>
+                                        <div
+                                            class="absolute top-4 right-4 bg-gradient-to-l from-primary to-primary-container text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                            جديد ✨
+                                        </div>
+                                        <button
+                                            class="heart-btn absolute top-4 left-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all group/heart">
+                                            <span
+                                                class="material-symbols-outlined text-xl text-on-surface-variant group-hover/heart:text-red-500 heart-icon">favorite</span>
+                                        </button>
+                                    </div>
+                                    <div class="p-7 text-right">
+                                        <h3 class="text-xl font-bold text-on-surface mb-3">قاعة القصر الكريستالي</h3>
+                                        <div class="flex flex-col gap-2 mb-6">
+                                            <div
+                                                class="flex items-center gap-2 justify-end text-on-surface-variant text-sm">
+                                                <span>جدة، طريق الكورنيش</span>
+                                                <span
+                                                    class="material-symbols-outlined text-base text-primary/60">location_on</span>
+                                            </div>
+                                            <div
+                                                class="flex items-center gap-4 justify-end text-on-surface-variant text-sm">
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-on-surface font-bold">300 - 600</span> شخص
+                                                    <span
+                                                        class="material-symbols-outlined text-base text-primary/60">groups</span>
+                                                </span>
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-tertiary-fixed-dim font-bold">4.8</span>
+                                                    <span
+                                                        class="material-symbols-outlined text-tertiary-fixed-dim text-base"
+                                                        style="font-variation-settings: 'FILL' 1;">star</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="w-full py-3.5 bg-primary/5 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300">عرض
+                                            التفاصيل</button>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Hall Card 3 -->
+                            <li class="splide__slide">
+                                <div
+                                    class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_20px_50px_rgba(83,22,105,0.14)] transition-all duration-500 group hover:-translate-y-2">
+                                    <div class="relative h-72 overflow-hidden">
+                                        <img alt="Emerald Ballroom"
+                                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                            src="hall3.jpeg" />
+                                        <div
+                                            class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                        </div>
+                                        <button
+                                            class="heart-btn absolute top-4 left-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all group/heart">
+                                            <span
+                                                class="material-symbols-outlined text-xl text-on-surface-variant group-hover/heart:text-red-500 heart-icon">favorite</span>
+                                        </button>
+                                    </div>
+                                    <div class="p-7 text-right">
+                                        <h3 class="text-xl font-bold text-on-surface mb-3">قاعة الزمردة الكلاسيكية</h3>
+                                        <div class="flex flex-col gap-2 mb-6">
+                                            <div
+                                                class="flex items-center gap-2 justify-end text-on-surface-variant text-sm">
+                                                <span>الدمام، المنطقة الشرقية</span>
+                                                <span
+                                                    class="material-symbols-outlined text-base text-primary/60">location_on</span>
+                                            </div>
+                                            <div
+                                                class="flex items-center gap-4 justify-end text-on-surface-variant text-sm">
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-on-surface font-bold">200 - 450</span> شخص
+                                                    <span
+                                                        class="material-symbols-outlined text-base text-primary/60">groups</span>
+                                                </span>
+                                                <span class="flex items-center gap-1">
+                                                    <span class="text-tertiary-fixed-dim font-bold">4.7</span>
+                                                    <span
+                                                        class="material-symbols-outlined text-tertiary-fixed-dim text-base"
+                                                        style="font-variation-settings: 'FILL' 1;">star</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            class="w-full py-3.5 bg-primary/5 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300">عرض
+                                            التفاصيل</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -368,163 +667,215 @@
 
         <!-- Halls Preview (Bento/Asymmetric Style) -->
         <section class="py-32 bg-surface-container-low">
-            <div class="container mx-auto px-8">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-20">
+            <div class="container mx-auto px-6 md:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
                     <div>
-                        <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">مساحات مصممة
-                            للإلهام</span>
-                        <h2 class="text-5xl font-extrabold text-on-surface">القاعات المختارة</h2>
+                        <span
+                            class="inline-block text-primary font-bold tracking-[0.3em] text-xs uppercase mb-4 bg-primary-fixed/40 px-5 py-2 rounded-full">مساحات
+                            مصممة للإلهام</span>
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface mt-3">القاعات المختارة</h2>
                     </div>
                     <button
-                        class="mt-8 md:mt-0 text-primary font-bold flex items-center gap-2 border-b-2 border-tertiary-fixed pb-1 hover:gap-4 transition-all">
+                        class="mt-8 md:mt-0 text-primary font-bold flex items-center gap-2 bg-primary/5 px-6 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-300 group/btn">
                         تصفح جميع القاعات
-                        <span class="material-symbols-outlined rotate-180">arrow_forward</span>
+                        <span
+                            class="material-symbols-outlined rotate-180 group-hover/btn:translate-x-[-4px] transition-transform">arrow_forward</span>
                     </button>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
-
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto reveal">
                     <!-- Hall 2 -->
                     <div
-                        class="md:col-span-4 group relative overflow-hidden rounded-lg bg-surface-container-lowest shadow-lg">
-                        <div class="aspect-square overflow-hidden">
+                        class="md:col-span-4 group relative overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_20px_50px_rgba(83,22,105,0.14)] transition-all duration-500 hover:-translate-y-2">
+                        <div class="aspect-square overflow-hidden relative">
                             <img alt="Crystal Ballroom"
                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                data-alt="intimate crystal ballroom with high ceilings, glowing wall sconces, and white rose centerpieces on round tables"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjshvDY-6xnyDjqmZ6JOk4ZPcdaG8hgjAJm-YqS44H29AirlTrLO3w0rxxZjTjxm66-U6Yg-fY5SRwIBvPga9qW8Jn3YbXCE7yXdpb3Xtiz1EtwiFE5u7xtZktbuh2uuiFy4SfrxR3kb51_zVn3nNa9E4uXkIwwWK-jtld7tPHE6lBC1dPVcWfrkRiO52ERX62nDoTpGDvfvLOUhlkCGvVm2DOqqV9c2jVNjarsZElN5jWOmR_2jlBMG8CAwvVMaXTRJtEmwArC2eO" />
-                        </div>
-                        <div class="p-8 border-t-2 border-tertiary-fixed">
-                            <h3 class="text-2xl font-bold mb-4">قاعة الكريستال</h3>
-                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
-                                <span class="flex items-center gap-1"><span
-                                        class="material-symbols-outlined text-sm">location_on</span> جدة،
-                                    الكورنيش</span>
-                                <span class="flex items-center gap-1"><span
-                                        class="material-symbols-outlined text-sm">group</span> حتى 250 ضيف</span>
+                                src="hall1.jpeg" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             </div>
                             <button
-                                class="w-full border border-primary text-primary py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                class="heart-btn absolute top-4 left-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all group/heart">
+                                <span
+                                    class="material-symbols-outlined text-xl text-on-surface-variant group-hover/heart:text-red-500 heart-icon">favorite</span>
+                            </button>
+                        </div>
+                        <div class="p-7">
+                            <h3 class="text-xl font-bold mb-3">قاعة الكريستال</h3>
+                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-base text-primary/60">location_on</span>
+                                    جدة، الكورنيش</span>
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-base text-primary/60">group</span> حتى 250
+                                    ضيف</span>
+                            </div>
+                            <button
+                                class="w-full py-3.5 bg-primary/5 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300">عرض
                                 التفاصيل</button>
                         </div>
                     </div>
                     <!-- Hall 3 -->
                     <div
-                        class="md:col-span-4 group relative overflow-hidden rounded-lg bg-surface-container-lowest shadow-lg">
-                        <div class="aspect-square overflow-hidden">
+                        class="md:col-span-4 group relative overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_20px_50px_rgba(83,22,105,0.14)] transition-all duration-500 hover:-translate-y-2">
+                        <div class="aspect-square overflow-hidden relative">
                             <img alt="The Sapphire Suite"
                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                data-alt="modern sapphire-themed event space with cool blue lighting, sleek minimalist furniture, and a private terrace overlooking the city"
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1coZ9MzLa4ml1CmETaTGZ2KDk2uyGapd6WKamH4pbCYzC1zHKF-xAvkTD1BsE_SV0pZi096bSFOFogEHXBEol7QWlgm69n802XEopdlJ8L-dJAodyfXsBYa6Au1U7uKP4QIcfzr4NWs-7ylLPJHtBT5p_Np_PDmy5AebOdzQegVFMg8lXJmPIXTsqpg73JLIYC0olDd2M8JUDl-y8H_vAxrBZak2aCaYrNkkZQQSvu8F_dZufjsofJJU59jH_Ay9jvHBTEhAu627V" />
-                        </div>
-                        <div class="p-8 border-t-2 border-tertiary-fixed">
-                            <h3 class="text-2xl font-bold mb-4">جناح الياقوت</h3>
-                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
-                                <span class="flex items-center gap-1"><span
-                                        class="material-symbols-outlined text-sm">location_on</span> الخبر،
-                                    الواجهة</span>
-                                <span class="flex items-center gap-1"><span
-                                        class="material-symbols-outlined text-sm">group</span> حتى 150 ضيف</span>
+                                src="hall2.jpeg" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             </div>
                             <button
-                                class="w-full border border-primary text-primary py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">عرض
+                                class="heart-btn absolute top-4 left-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all group/heart">
+                                <span
+                                    class="material-symbols-outlined text-xl text-on-surface-variant group-hover/heart:text-red-500 heart-icon">favorite</span>
+                            </button>
+                        </div>
+                        <div class="p-7">
+                            <h3 class="text-xl font-bold mb-3">جناح الياقوت</h3>
+                            <div class="text-on-surface-variant text-sm mb-6 flex flex-wrap gap-x-4 gap-y-2">
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-base text-primary/60">location_on</span>
+                                    الخبر، الواجهة</span>
+                                <span class="flex items-center gap-1"><span
+                                        class="material-symbols-outlined text-base text-primary/60">group</span> حتى 150
+                                    ضيف</span>
+                            </div>
+                            <button
+                                class="w-full py-3.5 bg-primary/5 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300">عرض
                                 التفاصيل</button>
                         </div>
                     </div>
                     <!-- Decorative Card/CTA -->
                     <div
-                        class="md:col-span-4 bg-primary-container p-12 rounded-lg flex flex-col justify-center text-white relative overflow-hidden">
+                        class="md:col-span-4 bg-gradient-to-br from-primary to-primary-container p-12 rounded-2xl flex flex-col justify-center text-white relative overflow-hidden">
                         <div class="relative z-10">
-                            <h3 class="text-4xl font-extrabold mb-6">هل تبحث عن تصميم خاص لمناسبتك؟</h3>
-                            <p class="text-lg opacity-80 mb-8 max-w-xl">نحن نوفر خدمات تصميم مخصصة بالكامل لتناسب رؤيتكم
-                                الخاصة، من الديكور إلى أدق تفاصيل الضيافة.</p>
+                            <span class="inline-block text-tertiary-fixed text-sm font-bold mb-4">✦ خدمة مخصصة</span>
+                            <h3 class="text-3xl font-extrabold mb-6 leading-tight">هل تبحث عن تصميم خاص لمناسبتك؟</h3>
+                            <p class="text-base opacity-80 mb-8 max-w-xl leading-relaxed">نحن نوفر خدمات تصميم مخصصة
+                                بالكامل لتناسب رؤيتكم الخاصة، من الديكور إلى أدق تفاصيل الضيافة.</p>
                             <button
-                                class="bg-tertiary-fixed text-on-tertiary-fixed px-10 py-4 rounded-full font-bold hover:brightness-110 transition-all">استشارة
-                                مجانية</button>
+                                class="bg-tertiary-fixed text-on-tertiary-fixed px-8 py-4 rounded-full font-bold hover:brightness-110 hover:shadow-lg hover:shadow-black/20 transition-all duration-300 hover:scale-[1.03] flex items-center gap-2">
+                                <span class="material-symbols-outlined">chat</span>
+                                استشارة مجانية
+                            </button>
                         </div>
                         <div
                             class="absolute left-[-5%] bottom-[-20%] w-64 h-64 bg-primary rounded-full blur-[80px] opacity-40">
+                        </div>
+                        <div
+                            class="absolute right-[-10%] top-[-10%] w-48 h-48 bg-tertiary-fixed rounded-full blur-[60px] opacity-15">
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- Testimonials -->
-        <section class="py-32 bg-surface">
-            <div class="container mx-auto px-8">
-                <div class="text-center mb-24">
-                    <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">شهادات نعتز
-                        بها</span>
-                    <h2 class="text-5xl font-extrabold text-on-surface">آراء العملاء</h2>
+        <section id="testimonials" class="py-32 bg-surface relative overflow-hidden">
+            <!-- Decorative background -->
+            <div class="absolute top-0 left-0 w-80 h-80 bg-primary-fixed/20 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-tertiary-fixed/10 rounded-full blur-[120px]"></div>
+
+            <div class="container mx-auto px-6 md:px-8 relative z-10">
+                <div class="text-center mb-20 reveal">
+                    <span
+                        class="inline-block text-primary font-bold tracking-[0.3em] text-xs uppercase mb-5 bg-primary-fixed/40 px-5 py-2 rounded-full">شهادات
+                        نعتز بها</span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface mt-3">آراء العملاء</h2>
+                    <p class="text-on-surface-variant mt-4 max-w-lg mx-auto text-lg">ثقة عملائنا هي أعظم جائزة نفتخر بها
+                    </p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal">
                     <!-- Testimonial 1 -->
-                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
-                        <div class="flex text-tertiary-fixed-dim mb-6">
-                            <span class="material-symbols-outlined"
+                    <div
+                        class="bg-surface-container-lowest p-10 rounded-2xl shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_15px_40px_rgba(83,22,105,0.1)] transition-all duration-500 hover:-translate-y-1 relative group">
+                        <!-- Quote icon -->
+                        <div class="absolute top-6 left-6 text-primary-fixed opacity-60">
+                            <span class="material-symbols-outlined text-5xl"
+                                style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        </div>
+                        <div class="flex text-tertiary-fixed-dim mb-6 gap-0.5">
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
                         </div>
-                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"كانت ليلة لا تُنسى!
-                            اهتمام فريق رويال أميثيست بالتفاصيل جعل حفل زفافنا يفوق كل التوقعات. الخدمة كانت راقية
-                            جداً."</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                        <p class="text-[15px] text-on-surface-variant mb-8 leading-[1.8] relative z-10">"كانت ليلة لا
+                            تُنسى! اهتمام فريق رويال أميثيست بالتفاصيل جعل حفل زفافنا يفوق كل التوقعات. الخدمة كانت
+                            راقية جداً."</p>
+                        <div class="flex items-center gap-4 pt-6" style="border-top: 1px solid rgba(208,194,208,0.3);">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center text-primary font-bold text-lg ring-2 ring-primary/10 ring-offset-2">
+                                س</div>
                             <div>
-                                <h4 class="font-bold">سارة وأحمد</h4>
+                                <h4 class="font-bold text-on-surface">سارة وأحمد</h4>
                                 <span class="text-xs text-on-surface-variant">حفل زفاف - أكتوبر 2023</span>
                             </div>
                         </div>
                     </div>
                     <!-- Testimonial 2 -->
-                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
-                        <div class="flex text-tertiary-fixed-dim mb-6">
-                            <span class="material-symbols-outlined"
+                    <div
+                        class="bg-surface-container-lowest p-10 rounded-2xl shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_15px_40px_rgba(83,22,105,0.1)] transition-all duration-500 hover:-translate-y-1 relative group">
+                        <div class="absolute top-6 left-6 text-primary-fixed opacity-60">
+                            <span class="material-symbols-outlined text-5xl"
+                                style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        </div>
+                        <div class="flex text-tertiary-fixed-dim mb-6 gap-0.5">
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
                         </div>
-                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"المكان قمة في الفخامة
-                            والتعامل احترافي للغاية. الضيوف انبهروا بجودة الطعام والترتيبات."</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                        <p class="text-[15px] text-on-surface-variant mb-8 leading-[1.8] relative z-10">"المكان قمة في
+                            الفخامة والتعامل احترافي للغاية. الضيوف انبهروا بجودة الطعام والترتيبات."</p>
+                        <div class="flex items-center gap-4 pt-6" style="border-top: 1px solid rgba(208,194,208,0.3);">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center text-primary font-bold text-lg ring-2 ring-primary/10 ring-offset-2">
+                                ع</div>
                             <div>
-                                <h4 class="font-bold">عبدالعزيز الفهد</h4>
+                                <h4 class="font-bold text-on-surface">عبدالعزيز الفهد</h4>
                                 <span class="text-xs text-on-surface-variant">مناسبة خاصة - سبتمبر 2023</span>
                             </div>
                         </div>
                     </div>
                     <!-- Testimonial 3 -->
-                    <div class="bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-2 border-tertiary-fixed">
-                        <div class="flex text-tertiary-fixed-dim mb-6">
-                            <span class="material-symbols-outlined"
+                    <div
+                        class="bg-surface-container-lowest p-10 rounded-2xl shadow-[0_4px_20px_rgba(83,22,105,0.06)] hover:shadow-[0_15px_40px_rgba(83,22,105,0.1)] transition-all duration-500 hover:-translate-y-1 relative group">
+                        <div class="absolute top-6 left-6 text-primary-fixed opacity-60">
+                            <span class="material-symbols-outlined text-5xl"
+                                style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        </div>
+                        <div class="flex text-tertiary-fixed-dim mb-6 gap-0.5">
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
-                            <span class="material-symbols-outlined"
+                            <span class="material-symbols-outlined text-lg"
                                 style="font-variation-settings: 'FILL' 1;">star</span>
                         </div>
-                        <p class="text-lg italic text-on-surface-variant mb-8 leading-relaxed">"أفضل قرار اتخذناه هو
-                            اختيار قاعة الكريستال. التنظيم كان مثالياً ولم نضطر للقلق بشأن أي شيء."</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-primary-fixed"></div>
+                        <p class="text-[15px] text-on-surface-variant mb-8 leading-[1.8] relative z-10">"أفضل قرار
+                            اتخذناه هو اختيار قاعة الكريستال. التنظيم كان مثالياً ولم نضطر للقلق بشأن أي شيء."</p>
+                        <div class="flex items-center gap-4 pt-6" style="border-top: 1px solid rgba(208,194,208,0.3);">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center text-primary font-bold text-lg ring-2 ring-primary/10 ring-offset-2">
+                                ن</div>
                             <div>
-                                <h4 class="font-bold">نورة محمد</h4>
+                                <h4 class="font-bold text-on-surface">نورة محمد</h4>
                                 <span class="text-xs text-on-surface-variant">حفل زفاف - ديسمبر 2023</span>
                             </div>
                         </div>
@@ -533,136 +884,397 @@
             </div>
         </section>
         <!-- Contact Section -->
-        <section class="py-32 bg-surface-container-low">
-            <div class="container mx-auto px-8 max-w-6xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
-                    <div>
-                        <span class="text-primary font-bold tracking-[0.3em] text-sm uppercase mb-4 block">تواصل
-                            معنا</span>
-                        <h2 class="text-5xl font-extrabold text-on-surface mb-8">ابدأ رحلتك معنا</h2>
-                        <p class="text-lg text-on-surface-variant mb-12 leading-relaxed">فريقنا جاهز للإجابة على جميع
-                            استفساراتكم ومساعدتكم في اختيار القاعة الأمثل لمناسبتكم الخاصة.</p>
-                        <div class="space-y-6">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                    <span class="material-symbols-outlined text-primary">phone</span>
+        <section id="contact" class="py-32 bg-surface relative overflow-hidden">
+            <!-- Decorative background elements -->
+            <div
+                class="absolute top-[-80px] left-[-60px] w-[350px] h-[350px] bg-primary-fixed/15 rounded-full blur-[120px]">
+            </div>
+            <div
+                class="absolute bottom-[-100px] right-[-80px] w-[400px] h-[400px] bg-tertiary-fixed/10 rounded-full blur-[140px]">
+            </div>
+
+            <div class="container mx-auto px-6 md:px-8 max-w-6xl relative z-10">
+                <!-- Section Header -->
+                <div class="text-center mb-16 reveal">
+                    <span
+                        class="inline-block text-primary font-bold tracking-[0.3em] text-xs uppercase mb-5 bg-primary-fixed/40 px-5 py-2 rounded-full">تواصل
+                        معنا</span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-on-surface mt-3">ابدأ رحلتك معنا</h2>
+                    <p class="text-on-surface-variant mt-4 max-w-lg mx-auto text-lg leading-relaxed">فريقنا جاهز للإجابة
+                        على جميع استفساراتكم ومساعدتكم في اختيار القاعة الأمثل</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 reveal">
+                    <!-- Contact Info Column -->
+                    <div class="lg:col-span-2 flex flex-col gap-6">
+                        <!-- Contact Card: Phone -->
+                        <div
+                            class="group bg-surface-container-low p-6 rounded-2xl hover:shadow-[0_12px_35px_rgba(83,22,105,0.08)] transition-all duration-500 hover:-translate-y-1 cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">phone</span>
                                 </div>
                                 <div>
-                                    <span class="block text-sm text-on-surface-variant">الرقم الموحد</span>
-                                    <span class="text-xl font-bold">9200 12345</span>
+                                    <span class="block text-xs text-on-surface-variant mb-1 tracking-wide">الرقم
+                                        الموحد</span>
+                                    <span class="text-lg font-bold text-on-surface">9200 12345</span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                                    <span class="material-symbols-outlined text-primary">mail</span>
+                        </div>
+                        <!-- Contact Card: Email -->
+                        <div
+                            class="group bg-surface-container-low p-6 rounded-2xl hover:shadow-[0_12px_35px_rgba(83,22,105,0.08)] transition-all duration-500 hover:-translate-y-1 cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">mail</span>
                                 </div>
                                 <div>
-                                    <span class="block text-sm text-on-surface-variant">البريد الإلكتروني</span>
-                                    <span class="text-xl font-bold">hello@royalamethyst.com</span>
+                                    <span class="block text-xs text-on-surface-variant mb-1 tracking-wide">البريد
+                                        الإلكتروني</span>
+                                    <span class="text-lg font-bold text-on-surface">hello@royalamethyst.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Contact Card: Location -->
+                        <div
+                            class="group bg-surface-container-low p-6 rounded-2xl hover:shadow-[0_12px_35px_rgba(83,22,105,0.08)] transition-all duration-500 hover:-translate-y-1 cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">location_on</span>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-on-surface-variant mb-1 tracking-wide">الموقع</span>
+                                    <span class="text-lg font-bold text-on-surface">الرياض، المملكة العربية
+                                        السعودية</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Working Hours Card -->
+                        <div
+                            class="group bg-surface-container-low p-6 rounded-2xl hover:shadow-[0_12px_35px_rgba(83,22,105,0.08)] transition-all duration-500 hover:-translate-y-1 cursor-pointer">
+                            <div class="flex items-center gap-5">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-fixed to-primary-fixed-dim flex items-center justify-center group-hover:from-primary group-hover:to-primary-container group-hover:text-white transition-all duration-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/20 text-primary shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">schedule</span>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-on-surface-variant mb-1 tracking-wide">ساعات
+                                        العمل</span>
+                                    <span class="text-lg font-bold text-on-surface">9 ص – 11 م | كل يوم</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div
-                        class="bg-surface-container-lowest p-12 rounded-lg shadow-xl border-t border-tertiary-fixed/20">
-                        <form class="space-y-6">
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold opacity-70">الاسم الكامل</label>
-                                <input
-                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none"
-                                    placeholder="أدخل اسمك هنا" type="text" />
+
+                    <!-- Form Column -->
+                    <div class="lg:col-span-3">
+                        <div
+                            class="bg-surface-container-lowest rounded-2xl shadow-[0_8px_40px_rgba(83,22,105,0.07)] p-8 md:p-10 relative overflow-hidden">
+                            <!-- Decorative accent -->
+                            <div
+                                class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary-fixed/20 to-transparent rounded-bl-[80px]">
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold opacity-70">البريد الإلكتروني</label>
-                                <input
-                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none"
-                                    placeholder="example@mail.com" type="email" />
+                            <div
+                                class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-tertiary-fixed/10 to-transparent rounded-tr-[60px]">
                             </div>
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold opacity-70">رسالتك</label>
-                                <textarea
-                                    class="w-full bg-transparent border-b-2 border-outline-variant/30 py-3 focus:border-primary transition-all outline-none resize-none"
-                                    placeholder="كيف يمكننا مساعدتك؟" rows="4"></textarea>
+
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-bold text-on-surface mb-2">أرسل لنا رسالة</h3>
+                                <p class="text-sm text-on-surface-variant mb-8">سنتواصل معك في أقرب وقت ممكن</p>
+
+                                <form class="space-y-5">
+                                    <!-- Name + Phone Row -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                        <div class="space-y-2">
+                                            <label class="text-xs font-bold text-on-surface-variant tracking-wide">الاسم
+                                                الكامل</label>
+                                            <div class="relative group/input">
+                                                <span
+                                                    class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30 text-lg group-focus-within/input:text-primary transition-colors duration-300">person</span>
+                                                <input
+                                                    class="w-full bg-surface-container-low/70 rounded-xl pr-11 pl-4 py-3.5 outline-none border border-transparent transition-all duration-300 focus:border-primary/30 focus:bg-white focus:shadow-[0_0_0_4px_rgba(83,22,105,0.06)] text-on-surface text-sm placeholder:text-on-surface-variant/35"
+                                                    placeholder="أدخل اسمك" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-xs font-bold text-on-surface-variant tracking-wide">رقم
+                                                الجوال</label>
+                                            <div class="relative group/input">
+                                                <span
+                                                    class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30 text-lg group-focus-within/input:text-primary transition-colors duration-300">phone</span>
+                                                <input
+                                                    class="w-full bg-surface-container-low/70 rounded-xl pr-11 pl-4 py-3.5 outline-none border border-transparent transition-all duration-300 focus:border-primary/30 focus:bg-white focus:shadow-[0_0_0_4px_rgba(83,22,105,0.06)] text-on-surface text-sm placeholder:text-on-surface-variant/35"
+                                                    placeholder="05x xxx xxxx" type="tel" dir="ltr" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-on-surface-variant tracking-wide">البريد
+                                            الإلكتروني</label>
+                                        <div class="relative group/input">
+                                            <span
+                                                class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30 text-lg group-focus-within/input:text-primary transition-colors duration-300">mail</span>
+                                            <input
+                                                class="w-full bg-surface-container-low/70 rounded-xl pr-11 pl-4 py-3.5 outline-none border border-transparent transition-all duration-300 focus:border-primary/30 focus:bg-white focus:shadow-[0_0_0_4px_rgba(83,22,105,0.06)] text-on-surface text-sm placeholder:text-on-surface-variant/35"
+                                                placeholder="example@mail.com" type="email" dir="ltr" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Type -->
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-on-surface-variant tracking-wide">نوع
+                                            المناسبة</label>
+                                        <div class="relative group/input">
+                                            <span
+                                                class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30 text-lg group-focus-within/input:text-primary transition-colors duration-300">celebration</span>
+                                            <select
+                                                class="w-full bg-surface-container-low/70 rounded-xl pr-11 pl-4 py-3.5 outline-none border border-transparent transition-all duration-300 focus:border-primary/30 focus:bg-white focus:shadow-[0_0_0_4px_rgba(83,22,105,0.06)] text-on-surface text-sm appearance-none cursor-pointer">
+                                                <option value="" class="text-on-surface-variant/35">اختر نوع المناسبة
+                                                </option>
+                                                <option>حفل زفاف</option>
+                                                <option>خطوبة</option>
+                                                <option>مناسبة خاصة</option>
+                                                <option>فعالية شركات</option>
+                                                <option>أخرى</option>
+                                            </select>
+                                            <span
+                                                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/30 text-lg pointer-events-none">expand_more</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Message -->
+                                    <div class="space-y-2">
+                                        <label
+                                            class="text-xs font-bold text-on-surface-variant tracking-wide">رسالتك</label>
+                                        <div class="relative group/input">
+                                            <span
+                                                class="material-symbols-outlined absolute right-4 top-4 text-on-surface-variant/30 text-lg group-focus-within/input:text-primary transition-colors duration-300">edit_note</span>
+                                            <textarea
+                                                class="w-full bg-surface-container-low/70 rounded-xl pr-11 pl-4 py-3.5 outline-none border border-transparent transition-all duration-300 focus:border-primary/30 focus:bg-white focus:shadow-[0_0_0_4px_rgba(83,22,105,0.06)] text-on-surface text-sm placeholder:text-on-surface-variant/35 resize-none"
+                                                placeholder="أخبرنا عن مناسبتك وما تبحث عنه..." rows="4"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit -->
+                                    <button
+                                        class="w-full bg-gradient-to-l from-primary to-primary-container text-white py-4 rounded-xl font-bold text-base hover:shadow-[0_10px_30px_rgba(83,22,105,0.25)] transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3 mt-2">
+                                        <span class="material-symbols-outlined text-xl">send</span>
+                                        إرسال الرسالة
+                                    </button>
+                                </form>
                             </div>
-                            <button
-                                class="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg hover:bg-primary-container transition-all shadow-lg shadow-primary/20">إرسال
-                                الرسالة</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-    <!-- Footer -->
-    <footer class="bg-[#f5f3ee] dark:bg-[#121210] w-full pt-20 pb-10 px-12 border-t border-[#ffdea5]/20">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto text-start">
-            <!-- Brand Info -->
-            <div class="col-span-1 md:col-span-1">
-                <div class="font-serif text-3xl text-[#531669] dark:text-[#f9d8ff] mb-4">Royal Amethyst</div>
-                <p
-                    class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 leading-relaxed font-sans text-xs uppercase tracking-widest">
-                    رويل أميثيست هي الوجهة الأولى لتنظيم حفلات الزفاف الفاخرة والمناسبات الملكية في المملكة.
-                </p>
+    <!-- ========== PREMIUM FOOTER ========== -->
+    <footer class="relative bg-[#1a0a24] text-white/80 overflow-hidden">
+        <!-- Top gradient separator -->
+        <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-l from-transparent via-[#eeb1ff]/30 to-transparent">
+        </div>
+        <!-- Decorative blurs -->
+        <div class="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] bg-[#531669]/20 rounded-full blur-[150px]">
+        </div>
+        <div class="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] bg-[#ffdea5]/5 rounded-full blur-[120px]">
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-10 pt-20 pb-10">
+            <!-- Footer Grid: 5 Columns -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+
+                <!-- Column 1: Brand -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-3 mb-5">
+                        <img src="logo.png" alt="Royal Amethyst" class="h-20 brightness-0 invert opacity-90" />
+                    </div>
+                    <p class="text-white/50 leading-relaxed text-sm mb-8 max-w-sm">
+                        قاعة هي الوجهة الأولى لتنظيم حفلات الزفاف الفاخرة والمناسبات الملكية في المملكة العربية
+                        السعودية. نحول أحلامكم إلى واقع بلمسة من الفخامة والإبداع.
+                    </p>
+                    <!-- Social Media Icons -->
+                    <div class="flex gap-3 flex-wrap">
+                        <!-- Facebook -->
+                        <a href="#" aria-label="Facebook"
+                            class="social-icon w-11 h-11 rounded-full bg-white/8 flex items-center justify-center hover:bg-[#531669] group">
+                            <svg class="w-5 h-5 fill-white/60 group-hover:fill-white transition-colors"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                        </a>
+                        <!-- Instagram -->
+                        <a href="#" aria-label="Instagram"
+                            class="social-icon w-11 h-11 rounded-full bg-white/8 flex items-center justify-center hover:bg-[#531669] group">
+                            <svg class="w-5 h-5 fill-white/60 group-hover:fill-white transition-colors"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                            </svg>
+                        </a>
+                        <!-- Twitter/X -->
+                        <a href="#" aria-label="X (Twitter)"
+                            class="social-icon w-11 h-11 rounded-full bg-white/8 flex items-center justify-center hover:bg-[#531669] group">
+                            <svg class="w-5 h-5 fill-white/60 group-hover:fill-white transition-colors"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </a>
+                        <!-- Snapchat -->
+                        <a href="#" aria-label="Snapchat"
+                            class="social-icon w-11 h-11 rounded-full bg-white/8 flex items-center justify-center hover:bg-[#531669] group">
+                            <svg class="w-5 h-5 fill-white/60 group-hover:fill-white transition-colors"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12.922-.254.104-.054.19-.083.27-.083.194 0 .39.104.46.292.057.147.053.306-.012.453-.132.299-.393.449-.72.569-.2.072-.413.125-.59.163-.083.018-.148.033-.204.047-.07.019-.127.035-.191.058-.104.04-.19.107-.248.226-.037.081-.042.174-.016.267.075.25.184.5.33.749.146.247.296.476.47.692.5.624 1.047 1.043 1.713 1.293.235.088.46.142.663.17.104.014.18.042.223.099.054.072.057.174.018.27-.135.33-.454.521-.897.639-.25.066-.52.101-.78.125-.147.012-.291.019-.434.037-.094.012-.168.08-.196.174-.024.082-.042.16-.057.237-.015.076-.035.164-.072.257-.078.201-.186.341-.373.426-.21.096-.465.136-.74.136-.339 0-.697-.07-1.043-.137-.258-.05-.506-.098-.735-.098-.114 0-.26.012-.453.053-.362.078-.742.253-1.119.43-.469.22-.975.458-1.522.458-.033 0-.065-.002-.098-.004-.032.002-.065.004-.098.004-.547 0-1.053-.239-1.522-.458-.377-.177-.757-.352-1.12-.43-.192-.041-.338-.053-.452-.053-.23 0-.477.047-.735.098-.346.067-.704.137-1.043.137-.275 0-.53-.04-.74-.136-.187-.085-.295-.225-.373-.426-.037-.093-.057-.18-.072-.257-.015-.077-.033-.155-.057-.237-.028-.094-.102-.162-.196-.174-.143-.018-.287-.025-.434-.037-.26-.024-.53-.059-.78-.125-.443-.118-.762-.309-.897-.639-.04-.096-.036-.198.018-.27.043-.057.12-.085.223-.099.203-.028.428-.082.663-.17.666-.25 1.213-.669 1.713-1.293.174-.216.324-.445.47-.692.146-.249.255-.499.33-.749.026-.093.021-.186-.016-.267-.058-.119-.144-.186-.248-.226-.064-.023-.121-.04-.191-.058-.056-.014-.121-.03-.204-.047-.177-.038-.39-.091-.59-.163-.327-.12-.588-.27-.72-.569-.065-.147-.07-.306-.012-.453.07-.188.266-.292.46-.292.08 0 .166.029.27.083.263.134.622.27.922.254.198 0 .326-.045.401-.09-.008-.165-.018-.33-.03-.51l-.003-.06c-.104-1.628-.23-3.654.3-4.847C7.86 1.069 11.216.793 12.206.793z" />
+                            </svg>
+                        </a>
+                        <!-- TikTok -->
+                        <a href="#" aria-label="TikTok"
+                            class="social-icon w-11 h-11 rounded-full bg-white/8 flex items-center justify-center hover:bg-[#531669] group">
+                            <svg class="w-5 h-5 fill-white/60 group-hover:fill-white transition-colors"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-6 flex items-center gap-2">
+                        <span class="w-6 h-[2px] bg-gradient-to-l from-[#eeb1ff] to-transparent inline-block"></span>
+                        روابط سريعة
+                    </h4>
+                    <ul class="space-y-3.5">
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#hero">الرئيسية</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#halls">القاعات</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#services">الخدمات</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#testimonials">آراء العملاء</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#contact">تواصل معنا</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Services -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-6 flex items-center gap-2">
+                        <span class="w-6 h-[2px] bg-gradient-to-l from-[#eeb1ff] to-transparent inline-block"></span>
+                        خدماتنا
+                    </h4>
+                    <ul class="space-y-3.5">
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#">الضيافة</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#">التصوير</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#">الزينة</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#">تنظيم الفعاليات</a></li>
+                        <li><a class="text-white/45 hover:text-[#eeb1ff] text-sm transition-colors duration-300 hover:pr-1"
+                                href="#">الاستشارات</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Contact + Newsletter -->
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-6 flex items-center gap-2">
+                        <span class="w-6 h-[2px] bg-gradient-to-l from-[#eeb1ff] to-transparent inline-block"></span>
+                        تواصل معنا
+                    </h4>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-white/45 text-sm">
+                            <span class="material-symbols-outlined text-[#eeb1ff]/60 text-lg">phone</span>
+                            <span dir="ltr">+966 9200 12345</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-white/45 text-sm">
+                            <span class="material-symbols-outlined text-[#eeb1ff]/60 text-lg">mail</span>
+                            hello@royalamethyst.com
+                        </li>
+                        <li class="flex items-start gap-3 text-white/45 text-sm">
+                            <span class="material-symbols-outlined text-[#eeb1ff]/60 text-lg mt-0.5">location_on</span>
+                            الرياض، المملكة العربية السعودية
+                        </li>
+                    </ul>
+
+
+                </div>
             </div>
-            <!-- Quick Links -->
-            <div>
-                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">روابط
-                    سريعة</h4>
-                <ul class="space-y-4">
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">قاعاتنا</a></li>
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">خدماتنا</a></li>
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">المعرض</a></li>
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">من نحن</a></li>
-                </ul>
-            </div>
-            <!-- Support -->
-            <div>
-                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">الدعم
-                </h4>
-                <ul class="space-y-4">
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">الأسئلة الشائعة</a></li>
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">سياسة الحجز</a></li>
-                    <li><a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] dark:hover:text-[#f9d8ff] underline-offset-4 underline font-sans text-xs uppercase tracking-widest"
-                            href="#">اتصل بنا</a></li>
-                </ul>
-            </div>
-            <!-- Social & Newsletter -->
-            <div>
-                <h4 class="text-[#6C3082] dark:text-[#f9d8ff] font-serif text-sm tracking-wide font-bold mb-6">اشترك
-                    معنا</h4>
-                <p class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 mb-6 font-sans text-xs uppercase tracking-widest">
-                    احصل على عروضنا الحصرية وآخر الأخبار.</p>
-                <div class="flex">
-                    <input
-                        class="bg-white/50 border-b border-[#6C3082]/30 px-4 py-2 w-full outline-none focus:border-[#6C3082]"
-                        placeholder="بريدك الإلكتروني" type="email" />
-                    <button class="bg-[#6C3082] text-white px-4 py-2"><span
-                            class="material-symbols-outlined">send</span></button>
+
+            <!-- Bottom Bar -->
+            <div class="pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4"
+                style="border-top: 1px solid rgba(238,177,255,0.1);">
+                <p class="text-white/30 text-xs">© 2024 Royal Amethyst. جميع الحقوق محفوظة.</p>
+                <div class="flex gap-6 flex-wrap justify-center">
+                    <a class="text-white/30 hover:text-[#eeb1ff] text-xs transition-colors duration-300" href="#">سياسة
+                        الخصوصية</a>
+                    <a class="text-white/30 hover:text-[#eeb1ff] text-xs transition-colors duration-300" href="#">شروط
+                        الاستخدام</a>
+                    <a class="text-white/30 hover:text-[#eeb1ff] text-xs transition-colors duration-300" href="#">سياسة
+                        ملفات تعريف الارتباط</a>
                 </div>
             </div>
         </div>
-        <!-- Footer Bottom -->
-        <div
-            class="max-w-7xl mx-auto mt-20 pt-10 border-t border-[#1b1c19]/10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 font-sans text-xs uppercase tracking-widest">© 2024 Royal
-                Amethyst Curatorship. All rights reserved.</p>
-            <div class="flex gap-8">
-                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
-                    href="#">Privacy Policy</a>
-                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
-                    href="#">Terms of Service</a>
-                <a class="text-[#1b1c19]/60 dark:text-[#fbf9f4]/60 hover:text-[#6C3082] font-sans text-xs uppercase tracking-widest"
-                    href="#">Cookie Policy</a>
-            </div>
-        </div>
-
     </footer>
+
+    <!-- Scroll Reveal + Splide Init -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intersection Observer for reveal animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // Splide slider for Featured Halls
+            const splide = new Splide('#halls-splide', {
+                type: 'loop',
+                direction: 'rtl',
+                perPage: 3,
+                perMove: 1,
+                gap: '2rem',
+                pagination: false,
+                arrows: false,
+                autoplay: true,
+                interval: 4000,
+                pauseOnHover: true,
+                speed: 600,
+                easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                breakpoints: {
+                    1024: { perPage: 2 },
+                    640: { perPage: 1 },
+                },
+            }).mount();
+
+            document.getElementById('halls-prev').addEventListener('click', () => splide.go('>'));
+            document.getElementById('halls-next').addEventListener('click', () => splide.go('<'));
+
+            // Hero crossfade carousel
+            const heroSlides = document.querySelectorAll('.hero-slide');
+            let heroIndex = 0;
+            setInterval(() => {
+                heroSlides[heroIndex].classList.remove('active');
+                heroIndex = (heroIndex + 1) % heroSlides.length;
+                heroSlides[heroIndex].classList.add('active');
+            }, 6000);
+        });
+    </script>
 </body>
 
 </html>
